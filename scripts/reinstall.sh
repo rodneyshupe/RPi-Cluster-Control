@@ -9,7 +9,7 @@ sudo systemctl is-active --quiet status_led_display.service && sudo systemctl st
 if [ -f /lib/systemd/system/master_control.service ]
 then
   sudo systemctl is-active --quiet master_control.service && sudo systemctl stop master_control.service
-  INSTALL_PARAM = "master"
+  INSTALL_PARAM="master"
 fi
 
 rm -Rf "$BASE_PATH"

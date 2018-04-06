@@ -1,0 +1,11 @@
+[Unit]
+Description=LED Display
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python RPICLUSTER_ROOTDIR/services/status_led/service_display.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

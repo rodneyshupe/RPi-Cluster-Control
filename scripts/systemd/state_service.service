@@ -1,0 +1,12 @@
+[Unit]
+Description=LED State REST Service
+Wants=network-online.target
+After=multi-user.target network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python RPICLUSTER_ROOTDIR/services/status_led/service_state_api.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

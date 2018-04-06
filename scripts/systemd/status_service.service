@@ -1,0 +1,12 @@
+[Unit]
+Description=Status REST Service
+Wants=network-online.target
+After=multi-user.target network.target network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python RPICLUSTER_ROOTDIR/services/status/service_status_api.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

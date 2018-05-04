@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+""" Methods used to handle the functionality of the Master Service API """
+
 import re
 import json
 
@@ -10,12 +13,14 @@ except ImportError:
 try:
     #Test for custom config
     import config_master_custom as CONFIG
-except:
+except ImportError:
     #If custom config fails load default
     import config_master_default as CONFIG
 
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'lib'))
+
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'lib'))
 from lib_common import str_join, isnumeric
 
 def host_method(method, node = ""):

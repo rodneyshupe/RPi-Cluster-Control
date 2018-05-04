@@ -1,9 +1,12 @@
 #!/usr/bin/env python
+""" Flask based API to handle the functionality of the Master Service API """
+
+from functools import wraps
+from flask import Flask, request, jsonify
+from flask_restful import Resource, Api
 
 from mod_master_control import master_status, master_led
 
-from flask import Flask, request, jsonify, json
-from flask_restful import Resource, Api
 """
 Need to install the following modules:
 pip install flask flask_restful
@@ -13,112 +16,170 @@ pip install flask flask_restful
 try:
     #Test for custom config
     import config_master_custom as CONFIG
-except:
+except ImportError:
     #If custom config fails load default
     import config_master_default as CONFIG
 
 app = Flask(__name__)
 api = Api(app)
 master_led_module = master_led()
-class nodes(Resource):
-    def get(self):
-        return(jsonify(master_status().get_hosts())) # Displays list of nodes
 
-class status(Resource):
-    def get(self):
-        return(jsonify(master_status().get_status())) # Fetches status info
+# Check Authentication
+def check_auth(username, password):
+    # TODO: Create a more robust authentication scheme
+    return username == 'admin' and password == 'secret'
 
-class status_debug(Resource):
-    def get(self):
-        return(jsonify(master_status().get_status(True))) # Fetches status info with debug info
+# Request Athentication
+def authenticate():
+    message = {'message': "Authenticate."}
+    resp = jsonify(message)
 
-class status_lines(Resource):
-    def get(self):
-        return(jsonify(master_status().get_status_line())) # Fetches status info for one node
+    resp.status_code = 401
+    resp.headers['WWW-Authenticate'] = 'Basic realm="Example"'
 
-class status_lines_by_node(Resource):
-    def get(self, node):
-        return(jsonify(master_status().get_status_line(node = node))) # Fetches status info for one node
+    return resp
 
-class status_line(Resource):
-    def get(self, line_type):
-        return(jsonify(master_status().get_status_line(line_type = line_type))) # Fetches status info for one node
+# Handle Authentication
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth:
+            return authenticate()
 
-class status_line_by_node(Resource):
-    def get(self, line_type, node):
-        return(jsonify(master_status().get_status_line(line_type, node))) # Fetches status info for one node
+        elif not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
 
-class status_by_node(Resource):
-    def get(self, node):
-        return(jsonify(master_status().get_status(node))) # Fetches status info for one node
+    return decorated
 
-class debug_by_node(Resource):
-    def get(self, node):
-        return(jsonify(master_status().get_status(node), True)) # Fetches status info with debug info for one node
+@app.errorhandler(404)
+def not_found(error=None):
+    message = {
+            'status': 404,
+            'message': 'Not Found: ' + request.url,
+    }
+    resp = jsonify(message)
+    resp.status_code = 404
 
-class shutdown(Resource):
-    def get(self):
-        return(jsonify(master_status().shutdown())) # Shutdown all nodes
+    return resp
 
-class reboot(Resource):
-    def get(self):
-        return(jsonify(master_status().reboot())) # Reboot all nodes
+@app.route('/api/v1.0/echo', methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'])
+def api_echo():
+    if request.method == 'GET':
+        return "ECHO: GET\n"
 
-class shutdown_node(Resource):
-    def get(self, node):
-        return(jsonify(master_status().shutdown(node))) # Shutdown one node
+    elif request.method == 'POST':
+        return "ECHO: POST\n"
 
-class reboot_node(Resource):
-    def get(self, node):
-        return(jsonify(master_status().reboot(node))) # Reboot one node
+    elif request.method == 'PATCH':
+        return "ECHO: PACTH\n"
 
-class get_led(Resource):
-    def get(self):
-        return(jsonify(master_led_module.get_state())) # Get LED State for all nodes
+    elif request.method == 'PUT':
+        return "ECHO: PUT\n"
 
-class get_led_node(Resource):
-    def get(self, node):
-        return(jsonify(master_led_module.get_state(node))) # Get LED State by node.
+    elif request.method == 'DELETE':
+        return "ECHO: DELETE"
 
-class set_led(Resource):
-    def get(self, state):
-        return(jsonify(master_led_module.set_state(state))) # Get LED State for all nodes
 
-class set_led_node(Resource):
-    def get(self, state, node):
-        return(jsonify(master_led_module.set_state(state, node))) # Get LED State by node.
+@app.route('/api/v1.0/nodes', methods = ['GET'])
+def api_nodes():
+    return(jsonify(master_status().get_hosts())) # Displays list of nodes
 
-class set_led_mode(Resource):
-    def get(self, mode):
-        return(jsonify(master_led_module.set_mode(mode))) # Get LED State by node.
+@app.route('/api/v1.0/status', methods = ['GET'])
+def api_status():
+    # Fetches status info
+    return(jsonify(master_status().get_status()))
 
-class set_led_pattern(Resource):
-    def get(self, pattern):
-        return(jsonify(master_led_module.set_pattern(pattern))) # Get LED State by node.
+@app.route('/api/v1.0/status/debug', methods = ['GET'])
+def api_status_debug():
+    # Fetches status info with debug info
+    return(jsonify(master_status().get_status(True)))
 
-class set_led_pattern_speed(Resource):
-    def get(self, pattern, speed):
-        return(jsonify(master_led_module.set_pattern(pattern,speed))) # Get LED State by node.
+@app.route('/api/v1.0/status/lines', methods = ['GET'])
+def api_status_lines():
+    # Fetches status info for one node
+    return(jsonify(master_status().get_status_line()))
 
-api.add_resource(nodes, '/api/v1.0/nodes')
-api.add_resource(status, '/api/v1.0/status')
-api.add_resource(status_debug, '/api/v1.0/status/debug')
-api.add_resource(status_lines, '/api/v1.0/status/lines')
-api.add_resource(status_lines_by_node, '/api/v1.0//status/lines/<node>')
-api.add_resource(status_line, '/api/v1.0//status/line/<line_type>')
-api.add_resource(status_line_by_node, '/api/v1.0//status/line/<line_type>/<node>')
-api.add_resource(status_by_node, '/api/v1.0/status/<node>')
-api.add_resource(debug_by_node, '/api/v1.0/status/debug/<node>')
-api.add_resource(shutdown, '/api/v1.0/shutdown')
-api.add_resource(reboot, '/api/v1.0/shutdown/reboot')
-api.add_resource(shutdown_node, '/api/v1.0/shutdown/<node>')
-api.add_resource(reboot_node, '/api/v1.0/shutdown/reboot/<node>')
-api.add_resource(get_led, '/api/v1.0/get_led')
-api.add_resource(get_led_node, '/api/v1.0/get_led/<node>')
-api.add_resource(set_led, '/api/v1.0/set_led/<state>')
-api.add_resource(set_led_mode, '/api/v1.0/set_led/mode/<mode>')
-api.add_resource(set_led_pattern, '/api/v1.0/set_led/pattern/<pattern>')
-api.add_resource(set_led_pattern_speed, '/api/v1.0/set_led/pattern/<pattern>/<speed>')
+@app.route('/api/v1.0//status/lines/<int:node>', methods = ['GET'])
+def api_status_lines_by_node(node):
+    # Fetches status info for one node
+    return(jsonify(master_status().get_status_line(node = node)))
+
+@app.route('/api/v1.0//status/line/<line_type>', methods = ['GET'])
+def api_status_line(line_type):
+    # Fetches status info for one node
+    return(jsonify(master_status().get_status_line(line_types = line_type)))
+
+@app.route('/api/v1.0//status/line/<line_type>/<int:node>', methods = ['GET'])
+def api_status_line_by_node(line_type, node):
+    # Fetches status info for one node
+    return(jsonify(master_status().get_status_line(line_type, node)))
+
+@app.route('/api/v1.0/status/<int:node>', methods = ['GET'])
+def api_status_by_node(node):
+    # Fetches status info for one node
+    return(jsonify(master_status().get_status(node)))
+
+@app.route('/api/v1.0/status/debug/<int:node>', methods = ['GET'])
+def api_debug_by_node(node):
+    # Fetches status info with debug info for one node
+    return(jsonify(master_status().get_status(node), True))
+
+@app.route('/api/v1.0/shutdown', methods = ['DELETE'])
+def api_shutdown():
+    # Shutdown all nodes
+    return(jsonify(master_status().shutdown()))
+
+@app.route('/api/v1.0/shutdown/reboot', methods = ['DELETE'])
+def api_reboot():
+    # Reboot all nodes
+    return(jsonify(master_status().reboot()))
+
+@app.route('/api/v1.0/shutdown/<int:node>', methods = ['DELETE'])
+def api_shutdown_node(node):
+    # Shutdown one node
+    return(jsonify(master_status().shutdown(node)))
+
+@app.route('/api/v1.0/shutdown/reboot/<int:node>', methods = ['DELETE'])
+def api_reboot_node(node):
+    # Reboot one node
+    return(jsonify(master_status().reboot(node)))
+
+@app.route('/api/v1.0/led', methods = ['GET'])
+def api_get_led():
+    # Get LED State for all nodes
+    return(jsonify(master_led_module.get_state()))
+
+@app.route('/api/v1.0/led/<int:node>', methods = ['GET'])
+def api_get_led_node(node):
+    # Get LED State by node.
+    return(jsonify(master_led_module.get_state(node)))
+
+@app.route('/api/v1.0/led/<int:state>', methods = ['PATCH'])
+def api_set_led(state):
+    # Get LED State for all nodes
+    return(jsonify(master_led_module.set_state(state)))
+
+@app.route('/api/v1.0/led/<int:node>/<int:state>', methods = ['PATCH'])
+def api_set_led_state(node, state):
+    # Get LED State by node.
+    return(jsonify(master_led_module.set_state(state, node)))
+
+@app.route('/api/v1.0/led/mode/<mode>', methods = ['PATCH'])
+def api_set_led_mode(mode):
+    # Get LED State by node.
+    return(jsonify(master_led_module.set_mode(mode)))
+
+@app.route('/api/v1.0/led/pattern/<pattern>', methods = ['PATCH'])
+def api_set_led_pattern(pattern):
+    # Get LED State by node.
+    return(jsonify(master_led_module.set_pattern(pattern)))
+
+@app.route('/api/v1.0/led/pattern/<pattern>/<int:speed>', methods = ['PATCH'])
+def api_set_led_pattern_speed(pattern, speed):
+    # Get LED State by node.
+    return(jsonify(master_led_module.set_pattern(pattern, speed)))
 
 if __name__ == '__main__':
      app.run(port=CONFIG.MASTER_API_PORT, host="0.0.0.0")

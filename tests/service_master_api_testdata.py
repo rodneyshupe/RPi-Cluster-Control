@@ -1,6 +1,10 @@
 #!/usr/bin/env python
+# pylint: disable=line-too-long
+"""
+Test data for Master API calls used for mocking in unit tests
+"""
 
-testdata = {
+TESTDATA = {
     'http://192.168.8.100:5001/api/v1.0/nodes':'{}',
     'http://192.168.8.100:5001/api/v1.0/status':'{}',
     'http://192.168.8.100:5001/api/v1.0/status/debug':'{}',
@@ -36,7 +40,7 @@ testdata = {
     'http://192.168.8.100:5001/api/v1.0/set_led/pattern/blink/1.5':'{}',
 }
 
-test_results = {
+TEST_RESULTS = {
     'get_status': {
         'rpi0': {
             'cpu': {'temperature': 52.8, 'usage': 3.7},
@@ -232,30 +236,43 @@ test_results = {
 }
 
 def contains(string, ignore_keywords):
+    """
+    Check string for presence of keywords
+    """
     check = False
     for keyword in ignore_keywords:
         if string.find(keyword) >= 0:
             print("found ", keyword, " in ", string)
             check = True
-    return(check)
+    return check
 
-def populate_testdata(ignore_keywords = ['shutdown', 'reboot']):
-    for url in testdata:
+def populate_testdata(ignore_keywords=None):
+    """
+    Populates the Test Data via API calls.
+    """
+    if ignore_keywords is None:
+        ignore_keywords = ['shutdown', 'reboot']
+    for url in TESTDATA:
         print(url)
         if not contains(url, ignore_keywords):
             print(url)
             from urllib.request import urlopen
-            response = urlopen(url, timeout = 1)
-            testdata[url] = response.read()
-    return(True)
+            response = urlopen(url, timeout=1)
+            TESTDATA[url] = response.read()
+    return True
 
-def print_testdata(refresh = False, ignore_keywords = ['shutdown', 'reboot']):
+def print_testdata(refresh=False, ignore_keywords=None):
+    """
+    Print the testdata useful to see the test data available
+    """
+    if ignore_keywords is None:
+        ignore_keywords = ['shutdown', 'reboot']
     if refresh:
         print("Refreshing...")
         populate_testdata(ignore_keywords)
-    print(testdata)
+    print(TESTDATA)
 
-import sys
+import sys # pylint: disable=wrong-import-position
 if len(sys.argv) > 1:
     if sys.argv[1] == "refresh":
         print_testdata(True)

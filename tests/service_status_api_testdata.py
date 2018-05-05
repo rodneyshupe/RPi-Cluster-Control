@@ -1,6 +1,9 @@
 #!/usr/bin/env python
-
-testdata = {
+# pylint: disable=line-too-long
+"""
+Test data for Status API calls used for mocking in unit tests
+"""
+TESTDATA = {
     'http://192.168.8.100:5002/api/v1.0/status':'{"cpu":{"temperature": 52.8,"usage": 3.7},"hostname": "rpi0","ip": "192.168.8.100","ram":{"free": 709013504,"percent_used": 30.0,"total": 1024319488,"used": 190210048},"uname":{"machine": "armv7l","node": "rpi0","processor": "","release": "4.9.80-v7+","system": "Linux","version": "#1098 SMP Fri Mar 9 19:11:42 GMT 2018"},"uptime": "15m"}',
     'http://192.168.8.100:5002/api/v1.0/status/debug':'{"cpu":{"temperature": 52.8,"usage": 3.7},"debug":{"psutil_version": "5.4.3","python_vesion": "2.7.13"},"hostname": "rpi0","ip": "192.168.8.100","ram":{"free": 709013504,"percent_used": 30.1,"total": 1024319488,"used": 190210048},"uname":{"machine": "armv7l","node": "rpi0","processor": "","release": "4.9.80-v7+","system": "Linux","version": "#1098 SMP Fri Mar 9 19:11:42 GMT 2018"},"uptime": "15m"}',
     'http://192.168.8.100:5002/api/v1.0/debug':'{"psutil_version": "5.4.3","python_vesion": "2.7.13"}',

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+"""
+Default Config File for Stae API and LED Display Service
+"""
 
-PORT=5003
+PORT = 5003
 
 RED_PIN = 11
 GREEN_PIN = 13

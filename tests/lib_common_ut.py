@@ -1,14 +1,18 @@
 #!/usr/bin/env python
+# pylint: disable=line-too-long
+""" Unit Tests for the lib_common module """
 
 import unittest # Documentation: https://docs.python.org/3.3/library/unittest.html
 
+#pylint: disable=wrong-import-position
 import sys
 sys.path.append("..")
 sys.path.append("../lib")
 from lib_common import str_join, isnumeric
+#pylint: enable=wrong-import-position
 
-class Test_For_lib_common(unittest.TestCase):
-
+class TestForLibCommon(unittest.TestCase):
+    """ Class contains unit tests. """
     # initialization logic for the test suite declared in the test module
     # code that is executed before all tests in one test run
     @classmethod
@@ -32,17 +36,22 @@ class Test_For_lib_common(unittest.TestCase):
         pass
 
     def test_lib_common_str_join(self):
-        self.assertEqual(str_join("This"," is a ","Test"), 'This is a Test')
-        self.assertEqual(str_join("This"," is a ","Test", 2), 'This is a Test2')
+        """ Test str_join function """
+        self.assertEqual(str_join("This", " is a ", "Test"), 'This is a Test')
+        self.assertEqual(str_join("This", " is a ", "Test", 2), 'This is a Test2')
         self.assertEqual(str_join(12.34, " anouther test"), '12.34 anouther test')
         self.assertEqual(str_join("Anouther test"), 'Anouther test')
         self.assertEqual(str_join(12.34), '12.34')
-        self.assertNotEqual(str_join("This"," is a ","Test"), 'ThisTest')
-        self.assertEqual(str_join({'This':1,'is not':'a'},'Bad Test'), "{'This': 1, 'is not': 'a'}Bad Test")
+        self.assertNotEqual(str_join("This", " is a ", "Test"), 'ThisTest')
+        self.assertEqual(
+            str_join({'This':1, 'is not':'a'}, 'Bad Test'),
+            "{'This': 1, 'is not': 'a'}Bad Test"
+        )
         #with self.assertRaises(TypeError):
         #    print(str_join([1,2,3],"Bad Test"))
 
     def test_lib_common_isnumeric(self):
+        """ Test isnumeric function """
         self.assertTrue(isnumeric("0"))
         self.assertTrue(isnumeric("1"))
         self.assertTrue(isnumeric("-1"))
@@ -60,7 +69,7 @@ class Test_For_lib_common(unittest.TestCase):
         self.assertFalse(isnumeric(""))
         self.assertFalse(isnumeric("Two"))
         self.assertFalse(isnumeric("1O")) # Note this is the letter O not a zero
-        self.assertFalse(isnumeric([1,2,3]))
+        self.assertFalse(isnumeric([1, 2, 3]))
         self.assertFalse(isnumeric({"1":"2"}))
 
 if __name__ == '__main__':

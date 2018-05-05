@@ -1,20 +1,14 @@
 #!/usr/bin/env python
+""" Module of common functions used across several other modules and services. """
 
-# =======================================
-#
-# Common functions used accross modules
-# and services.
-#
-# =======================================
-
-# Join strings together
-# Returns a string
 def str_join(*args):
+    """ Join strings together. Returns a string """
     return ''.join(map(str, args))
 
-# Sets is string is numeric
-# Returns a boolean
 def isnumeric(test):
+    """ Sets is string is numeric. Returns a boolean """
     import re
-    #return(re.match(re.compile("^[\-]?[0-9][0-9]*\.?[0-9]+$"), str(test)))
-    return(re.match(re.compile("^[\-]?(([1-9][0-9]*)|[0-9]|[0-9]\.([0-9]+)|(([1-9]?[0-9]*)\.([0-9]+)))$"), str(test)))
+    return re.match(
+        re.compile(r"^[\-]?(([1-9][0-9]*)|[0-9]|[0-9]\.([0-9]+)|(([1-9]?[0-9]*)\.([0-9]+)))$"),
+        str(test)
+    )

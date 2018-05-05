@@ -1,8 +1,11 @@
 #!/usr/bin/env python
+"""
+Custom Config File for Master Control API
+"""
 
-MASTER_API_PORT=5001
-STATUS_API_PORT=5002
-LED_API_PORT=5003
+MASTER_API_PORT = 5001
+STATUS_API_PORT = 5002
+LED_API_PORT = 5003
 
 USE_MULTITREADING = True
 THREADS = 4

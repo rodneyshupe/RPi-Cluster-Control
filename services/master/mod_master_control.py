@@ -29,7 +29,14 @@ def host_method(method, node=None, protocol="GET"):
     '''
     cmd_response = {}
     if node:
-        cmd_response[node] = host_call(str_join("http://", CONFIG.API_HOSTS[node], method))
+        if node in CONFIG.API_HOSTS:
+            cmd_response[node] = host_call(str_join("http://", CONFIG.API_HOSTS[node], method),
+                                           protocol=protocol)
+        else:
+            cmd_response[node] = {'error': 'Error in host_method: Invalid Node (' + str(node) + ')',
+                                  'method': method,
+                                  'protocol': protocol}
+            #raise KeyError
     else:
         cmd_response = {}
         if CONFIG.USE_MULTITREADING:

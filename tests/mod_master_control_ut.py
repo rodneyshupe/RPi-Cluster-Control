@@ -139,10 +139,12 @@ class UnitTestsModMasterControl(unittest.TestCase):
         test_result = {'rpi0': service_master_api_testdata.TEST_RESULTS['get_status']['rpi0']}
         self.assertEqual(status, test_result)
 
-        with self.assertRaises(KeyError):
-            status = mod_master_control.MasterStatus().get_status(1)
-        with self.assertRaises(KeyError):
-            status = mod_master_control.MasterStatus().get_status("abc")
+        #with self.assertRaises(KeyError):
+        status = mod_master_control.MasterStatus().get_status(1)
+        self.assertEqual(status[1]['error'], "Error in host_method: Invalid Node (1)")
+        #with self.assertRaises(KeyError):
+        status = mod_master_control.MasterStatus().get_status("abc")
+        self.assertEqual(status["abc"]['error'], "Error in host_method: Invalid Node (abc)")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
     def test_get_status_line(self, mock_urlopen): # pylint: disable=unused-argument
@@ -399,10 +401,12 @@ class UnitTestsModMasterControl(unittest.TestCase):
         result = mod_master_control.MasterStatus().shutdown('rpi0')
         self.assertEqual(result, {'rpi0': service_master_api_testdata.TEST_RESULTS['shutdown']['rpi0']})
 
-        with self.assertRaises(KeyError):
-            result = mod_master_control.MasterStatus().shutdown(1)
-        with self.assertRaises(KeyError):
-            result = mod_master_control.MasterStatus().shutdown("abc")
+        #with self.assertRaises(KeyError):
+        result = mod_master_control.MasterStatus().shutdown(1)
+        self.assertEqual(result[1]['error'], "Error in host_method: Invalid Node (1)")
+        #with self.assertRaises(KeyError):
+        result = mod_master_control.MasterStatus().shutdown("abc")
+        self.assertEqual(result["abc"]['error'], "Error in host_method: Invalid Node (abc)")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
     def test_master_status_reboot(self, mock_urlopen): # pylint: disable=unused-argument
@@ -414,10 +418,12 @@ class UnitTestsModMasterControl(unittest.TestCase):
         result = mod_master_control.MasterStatus().reboot('rpi3')
         self.assertEqual(result, {'rpi3': service_master_api_testdata.TEST_RESULTS['reboot']['rpi3']})
 
-        with self.assertRaises(KeyError):
-            result = mod_master_control.MasterStatus().reboot(1)
-        with self.assertRaises(KeyError):
-            result = mod_master_control.MasterStatus().reboot("abc")
+        #with self.assertRaises(KeyError):
+        result = mod_master_control.MasterStatus().reboot(1)
+        self.assertEqual(result[1]['error'], "Error in host_method: Invalid Node (1)")
+        #with self.assertRaises(KeyError):
+        result = mod_master_control.MasterStatus().shutdown("abc")
+        self.assertEqual(result["abc"]['error'], "Error in host_method: Invalid Node (abc)")
 
     def test_master_led_get_settings(self):
         '''
@@ -465,8 +471,9 @@ class UnitTestsModMasterControl(unittest.TestCase):
         state = mod_master_control.MasterLed().get_state("rpi0")
         self.assertEqual(state, test_results)
 
-        with self.assertRaises(KeyError):
-            state = mod_master_control.MasterLed().get_state("abc")
+        #with self.assertRaises(KeyError):
+        state = mod_master_control.MasterLed().get_state("abc")
+        self.assertEqual(state["nodes"]["abc"]['error'], "Error in host_method: Invalid Node (abc)")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
     def test_master_led_set_state(self, mock_urlopen): # pylint: disable=unused-argument
@@ -499,8 +506,9 @@ class UnitTestsModMasterControl(unittest.TestCase):
             state = mod_master_control.MasterLed().set_state("")
         with self.assertRaises(ValueError):
             state = mod_master_control.MasterLed().set_state("1000")
-        with self.assertRaises(KeyError):
-            state = mod_master_control.MasterLed().set_state("000", "abc")
+        #with self.assertRaises(KeyError):
+        state = mod_master_control.MasterLed().set_state("000", "abc")
+        self.assertEqual(state['nodes']["abc"]['error'], "Error in host_method: Invalid Node (abc)")
 
     def test_master_led_set_mode(self):
         '''

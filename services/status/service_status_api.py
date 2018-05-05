@@ -61,4 +61,5 @@ def api_reboot():
     return jsonify(do_shutdown(True))
 
 if __name__ == '__main__':
+    app.debug = CONFIG.APP_DEBUG
     app.run(port=CONFIG.STATUS_API_PORT, host="0.0.0.0")

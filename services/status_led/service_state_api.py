@@ -51,4 +51,5 @@ def api_set_state(state):
     return jsonify(response)
 
 if __name__ == '__main__':
+    app.debug = CONFIG.APP_DEBUG
     app.run(port=CONFIG.PORT, host="0.0.0.0")

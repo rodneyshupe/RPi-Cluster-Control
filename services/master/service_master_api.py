@@ -178,7 +178,7 @@ def api_get_led():
     '''
     return jsonify(master_led_module.get_state())
 
-@app.route('/api/v1.0/led/<int:node>', methods=['GET'])
+@app.route('/api/v1.0/led/<node>', methods=['GET'])
 def api_get_led_node(node):
     '''
     Get LED State by node
@@ -192,7 +192,7 @@ def api_set_led(state):
     '''
     return jsonify(master_led_module.set_state(state))
 
-@app.route('/api/v1.0/led/<int:node>/<state>', methods=['PATCH'])
+@app.route('/api/v1.0/led/<node>/<state>', methods=['PATCH'])
 def api_set_led_state(node, state):
     '''
     Set LED State by node.
@@ -221,4 +221,5 @@ def api_set_led_pattern_speed(pattern, speed):
     return jsonify(master_led_module.set_pattern(pattern, speed))
 
 if __name__ == '__main__':
+    app.debug = CONFIG.APP_DEBUG
     app.run(port=CONFIG.MASTER_API_PORT, host="0.0.0.0")

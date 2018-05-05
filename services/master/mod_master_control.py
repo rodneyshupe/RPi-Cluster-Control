@@ -59,10 +59,9 @@ def host_call(cmd_url, protocol="GET"):
     Make HTTP call to host.
     '''
     try:
-        request = Request(cmd_url, method=protocol)
-        #request.get_method = lambda: protocol
+        request = Request(cmd_url)
+        request.get_method = lambda: protocol
         response = urlopen(request)
-        #response = urlopen(cmd_url)
         cmd_response = json.loads(response.read())
     except URLError as url_error:
         print('Got an error code from ', cmd_url, ':', url_error.args)

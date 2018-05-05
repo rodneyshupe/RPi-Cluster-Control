@@ -8,13 +8,13 @@ import unittest # Documentation: https://docs.python.org/3.3/library/unittest.ht
 from unittest.mock import patch
 import json
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/status")
 import service_status_api
 import mod_status_info
 #import mod_state_file
-#pylint: enable=wrong-import-position
+# pylint: enable=wrong-import-position
 
 
 def dictionaries_equal(dict1, dict2):
@@ -57,7 +57,7 @@ class UnitTestsServiceStatusApi(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
         service_status_api.app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-        self.maxDiff = None # pylint: disable=C0103
+        self.maxDiff = None # pylint: disable=invalid-name
 
     # clean up logic
     # code that is executed after each test

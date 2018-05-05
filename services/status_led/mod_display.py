@@ -37,7 +37,7 @@ class LedDisplay():
         StateFile().write(CONFIG.DEFAULT_DISPLAY_STATE)
 
     def _on(self, idx):
-        import RPi.GPIO as GPIO # pylint: disable=E0401
+        import RPi.GPIO as GPIO # pylint: disable=import-error
         GPIO.setmode(GPIO.BOARD)
         GPIO.setwarnings(False)
         GPIO.setup(self.pins[idx], GPIO.OUT)
@@ -46,7 +46,7 @@ class LedDisplay():
         return GPIO.input(self.pins[idx]) == GPIO.HIGH
 
     def _off(self, idx):
-        import RPi.GPIO as GPIO # pylint: disable=E0401
+        import RPi.GPIO as GPIO # pylint: disable=import-error
         GPIO.setmode(GPIO.BOARD)
         GPIO.setwarnings(False)
         GPIO.setup(self.pins[idx], GPIO.OUT)
@@ -54,7 +54,7 @@ class LedDisplay():
 
         return GPIO.input(self.pins[idx]) == GPIO.LOW
 
-    def on(self, idx):  # pylint: disable=C0103
+    def on(self, idx):  # pylint: disable=invalid-name
         '''
         Turn on LED pin.
         '''

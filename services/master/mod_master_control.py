@@ -18,7 +18,7 @@ except ImportError:
     #If custom config fails load default
     import config_master_default as CONFIG
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'lib'))
 from lib_common import str_join, isnumeric
 # pylint: enable=wrong-import-position

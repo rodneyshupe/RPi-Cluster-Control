@@ -4,11 +4,11 @@
 
 import unittest # Documentation: https://docs.python.org/3.3/library/unittest.html
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/status_led")
-import mod_state_file  # pylint: disable=E0401
-#pylint: enable=wrong-import-position
+import mod_state_file  # pylint: disable=import-error
+# pylint: enable=wrong-import-position
 
 class UnitTestsModStateFile(unittest.TestCase):
     '''

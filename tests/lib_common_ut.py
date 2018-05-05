@@ -4,12 +4,12 @@
 
 import unittest # Documentation: https://docs.python.org/3.3/library/unittest.html
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("..")
 sys.path.append("../lib")
 from lib_common import str_join, isnumeric
-#pylint: enable=wrong-import-position
+# pylint: enable=wrong-import-position
 
 class TestForLibCommon(unittest.TestCase):
     """ Class contains unit tests. """

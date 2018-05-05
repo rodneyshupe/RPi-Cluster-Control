@@ -7,12 +7,12 @@ from unittest.mock import patch, Mock
 
 import urllib.request
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/master")
-import mod_master_control # pylint: disable=E0401
-import config_master_default as CONFIG # pylint: disable=E0401
-#pylint: enable=wrong-import-position
+import mod_master_control # pylint: disable=import-error
+import config_master_default as CONFIG # pylint: disable=import-error
+# pylint: enable=wrong-import-position
 
 #Build testdata
 import service_master_api_testdata
@@ -24,9 +24,8 @@ for key in service_status_api_testdata.TESTDATA:
 for key in service_state_api_testdata.TESTDATA:
     TESTDATA[key] = service_state_api_testdata.TESTDATA[key]
 
-# pylint: disable=C0301
-# pylint: disable=R0914
-# pylint: disable=R0904
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-public-methods
 class UnitTestsModMasterControl(unittest.TestCase):
     '''
     Tests for mod_master_control.py
@@ -61,14 +60,14 @@ class UnitTestsModMasterControl(unittest.TestCase):
         pass
 
     # These function used used to mock the urlib.request.urlopen method
-    # pylint: disable=E0213
-    def mock_call_urlopen(request_obj): # pylint: disable=W0613
+    # pylint: disable=no-self-argument
+    def mock_call_urlopen(request_obj): # pylint: disable=unused-argument
         '''
         Simulate URL Open
         '''
         with patch('urllib.request.urlopen') as mocked_urlopen:
             mock_urlopen_return = Mock()
-            url = request_obj._full_url # pylint: disable=E1101
+            url = request_obj._full_url # pylint: disable=no-member
             try:
                 return_value = TESTDATA[url]
             except KeyError:
@@ -80,10 +79,10 @@ class UnitTestsModMasterControl(unittest.TestCase):
             #request = Request(url, method='GET')
             result = urllib.request.urlopen(request_obj)
         return result
-    # pylint: enable=E0213
+    # pylint: enable=no-self-argument
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_host_method(self, mock_urlopen): # pylint: disable=W0613
+    def test_host_method(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.host_method(method, node=None, protocol='GET')
         '''
@@ -114,7 +113,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
             mod_master_control.host_method(method='', node='', protocol="GET")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_host_call(self, mock_urlopen): # pylint: disable=W0613
+    def test_host_call(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.host_call
         '''
@@ -129,7 +128,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
         self.assertEqual(hosts, mod_master_control.CONFIG.API_HOSTS)
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status_get_status(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status_get_status(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test get_status(node = "", debug=False)
         '''
@@ -146,7 +145,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
             status = mod_master_control.MasterStatus().get_status("abc")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_get_status_line(self, mock_urlopen): # pylint: disable=W0613
+    def test_get_status_line(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test get_status_line(line_types = [1, 2, 3, 4], node = "", line_width = -1)
         '''
@@ -195,9 +194,9 @@ class UnitTestsModMasterControl(unittest.TestCase):
                         test_data[line_type][node] = data
                 self.assertEqual(result, test_data)
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status__status_line(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status__status_line(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test _status_line(line_type, status)
         '''
@@ -215,9 +214,9 @@ class UnitTestsModMasterControl(unittest.TestCase):
 
         result = mod_master_control.MasterStatus()._status_line(0, status['rpi0'])
         self.assertEqual(result, "Errror: Invalid line type")
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     def test_master_status_line(self):
         '''
         Test _line(hostname, data_string)
@@ -251,9 +250,9 @@ class UnitTestsModMasterControl(unittest.TestCase):
 
         module.line_width = 4
         self.assertEqual(module._line("rpi0", data_string), "rpi0")
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     def test_master_status__line_uptime(self):
         '''
         Test _line_uptime(hostname, uptime_str)
@@ -306,11 +305,11 @@ class UnitTestsModMasterControl(unittest.TestCase):
         for uptime in uptime_strings:
             module.line_width = len("rpi2:") + len(uptime)
             self.assertEqual(module._line_uptime("rpi2", uptime), "rpi2:" + uptime)
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status__os(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status__os(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus()._os(status)
         '''
@@ -327,11 +326,11 @@ class UnitTestsModMasterControl(unittest.TestCase):
             for line_width in service_master_api_testdata.TEST_RESULTS['status_lines']:
                 result = mod_master_control.MasterStatus(line_width)._os(status[node])
                 self.assertEqual(result, service_master_api_testdata.TEST_RESULTS['status_lines'][line_width][test_results_key][node])
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status__ip(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status__ip(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus()._ip(status)
         '''
@@ -348,11 +347,11 @@ class UnitTestsModMasterControl(unittest.TestCase):
             for line_width in service_master_api_testdata.TEST_RESULTS['status_lines']:
                 result = mod_master_control.MasterStatus(line_width)._ip(status[node])
                 self.assertEqual(result, service_master_api_testdata.TEST_RESULTS['status_lines'][line_width][test_results_key][node])
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status__usage(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status__usage(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus()._usage(status)
         '''
@@ -368,11 +367,11 @@ class UnitTestsModMasterControl(unittest.TestCase):
             for line_width in service_master_api_testdata.TEST_RESULTS['status_lines']:
                 result = mod_master_control.MasterStatus(line_width)._usage(status[node])
                 self.assertEqual(result, service_master_api_testdata.TEST_RESULTS['status_lines'][line_width][test_results_key][node])
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status__uptime(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status__uptime(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus()._uptime(status)
         '''
@@ -388,10 +387,10 @@ class UnitTestsModMasterControl(unittest.TestCase):
             for line_width in service_master_api_testdata.TEST_RESULTS['status_lines']:
                 result = mod_master_control.MasterStatus(line_width)._uptime(status[node])
                 self.assertEqual(result, service_master_api_testdata.TEST_RESULTS['status_lines'][line_width][test_results_key][node])
-    # pylint: enable=W0212
+    # pylint: enable=protected-access
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status_shutdown(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status_shutdown(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus().shutdown()
         '''
@@ -406,7 +405,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
             result = mod_master_control.MasterStatus().shutdown("abc")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_status_reboot(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_status_reboot(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterStatus().reboot()
         '''
@@ -451,7 +450,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
 
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_led_get_state(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_led_get_state(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterLed().get_state()
         '''
@@ -470,7 +469,7 @@ class UnitTestsModMasterControl(unittest.TestCase):
             state = mod_master_control.MasterLed().get_state("abc")
 
     @patch('mod_master_control.urlopen', side_effect=mock_call_urlopen)
-    def test_master_led_set_state(self, mock_urlopen): # pylint: disable=W0613
+    def test_master_led_set_state(self, mock_urlopen): # pylint: disable=unused-argument
         '''
         Test mod_master_control.MasterLed().set_state()
         '''

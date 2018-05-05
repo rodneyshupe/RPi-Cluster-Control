@@ -5,11 +5,11 @@
 import unittest # Documentation: https://docs.python.org/3.3/library/unittest.html
 from unittest.mock import patch
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/status")
 import mod_status_info
-#pylint: enable=wrong-import-position
+# pylint: enable=wrong-import-position
 
 class UnitTestsModStatusInfo(unittest.TestCase):
     """

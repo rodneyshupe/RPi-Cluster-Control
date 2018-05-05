@@ -6,11 +6,11 @@ import unittest # Documentation: https://docs.python.org/3.3/library/unittest.ht
 from unittest.mock import patch
 import imp
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/status_led")
-from mod_display import LedDisplay # pylint: disable=E0401
-#pylint: enable=wrong-import-position
+from mod_display import LedDisplay # pylint: disable=import-error
+# pylint: enable=wrong-import-position
 
 #Get Configuration
 try:
@@ -49,7 +49,7 @@ class UnitTestsModDisplay(unittest.TestCase):
     def setUp(self):
         self.display_module = LedDisplay()
         self.display_module.pinstates = [False, False, False]
-        from mod_state_file import StateFile # pylint: disable=E0401
+        from mod_state_file import StateFile # pylint: disable=import-error
         StateFile().write('000')
         self.display_module.blink_delay = CONFIG.BLINK_DELAY
 
@@ -261,7 +261,7 @@ class UnitTestsModDisplay(unittest.TestCase):
         Test set_exit
         '''
         self.assertTrue(self.display_module.set_exit())
-        from mod_state_file import StateFile # pylint: disable=E0401
+        from mod_state_file import StateFile # pylint: disable=import-error
         self.assertEqual(StateFile().read(), 'exi')
 
     def test_mod_display_display(self):

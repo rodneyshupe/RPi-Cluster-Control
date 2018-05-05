@@ -6,12 +6,12 @@ import unittest # Documentation: https://docs.python.org/3.3/library/unittest.ht
 import json
 
 
-#pylint: disable=wrong-import-position
+# pylint: disable=wrong-import-position
 import sys
 sys.path.append("../services/status_led")
 import service_state_api # pylint: disable=import-error
 import mod_state_file # pylint: disable=import-error
-#pylint: enable=wrong-import-position
+# pylint: enable=wrong-import-position
 
 class UnitTestsServiceStateApi(unittest.TestCase):
     """

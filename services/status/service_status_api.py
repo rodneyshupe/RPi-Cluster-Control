@@ -30,7 +30,7 @@ def do_shutdown(do_reboot=False):
         action = "Shutdown"
     import subprocess
     try:
-        subprocess.Popen(['/bin/bash', '-c', command], stdout=subprocess.PIPE, shell=True)
+        subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output = "ok"
     except OSError as os_error:
         output = "Failed  for " + os_error.strerror

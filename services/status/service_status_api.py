@@ -28,6 +28,7 @@ def do_shutdown(do_reboot=False):
     else:
         command = "/bin/sleep 5s; sudo /sbin/shutdown now"
         action = "Shutdown"
+    import sys
     import subprocess
     try:
         subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
@@ -35,9 +36,9 @@ def do_shutdown(do_reboot=False):
     except OSError as os_error:
         output = "Failed  for " + os_error.strerror
     except: # pylint: disable=bare-except
-        output = "Failed for unknown error"
+        output = "Failed for error:" + sys.exc_info()[0]
     response = {"action":action, "command":command, "result":output}
-    return response
+    return jsonify(response)
 
 @app.route('/api/v1.0/status', methods=['GET'])
 def api_status():

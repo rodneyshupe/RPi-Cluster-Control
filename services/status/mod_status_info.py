@@ -8,8 +8,6 @@ import subprocess
 import re
 import psutil
 
-#from subprocess import PIPE, Popen
-
 class StatusInfo():
     """
     Status class containing methods for retrieving and returning status info

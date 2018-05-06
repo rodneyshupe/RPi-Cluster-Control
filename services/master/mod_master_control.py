@@ -72,7 +72,7 @@ def host_call(cmd_url, protocol="GET"):
         cmd_response = json.loads(response.read())
     except URLError as url_error:
         print('Got an error code from ', cmd_url, ':', url_error.args)
-        cmd_response = {'error': url_error.args}
+        cmd_response = {'error': "API (%s) returned error  %s" % (url_error.url, url_error.reason)}
     return cmd_response
 
 def host_call_wrapper(args):

@@ -71,8 +71,8 @@ class UnitTestsServiceStatusApi(unittest.TestCase):
         """
         Test Shutdown/Reboot Call - Does not abtually shutdown/reboot the box.
         """
-        shutdown_response = {"action":"Shutdown", "command":"(/bin/sleep 5s; sudo /sbin/shutdown now) &", "result":"ok"}
-        reboot_response = {"action":"Reboot", "command":"(/bin/sleep 5s; sudo /sbin/shutdown -r now) &", "result":"ok"}
+        shutdown_response = {"action":"Shutdown", "command":"/bin/sleep 5s; sudo /sbin/shutdown now", "result":"ok"}
+        reboot_response = {"action":"Reboot", "command":"/bin/sleep 5s; sudo /sbin/shutdown -r now", "result":"ok"}
         with patch('subprocess.Popen') as mocked_check_output:
             mocked_check_output.return_value.communicate.return_value = ["ok"]
             result = service_status_api.do_shutdown()
@@ -116,7 +116,7 @@ class UnitTestsServiceStatusApi(unittest.TestCase):
         """
         Test the API shutdown method
         """
-        standard_response = {"action":"Shutdown", "command":"(/bin/sleep 5s; sudo /sbin/shutdown now) &", "result":"ok"}
+        standard_response = {"action":"Shutdown", "command":"/bin/sleep 5s; sudo /sbin/shutdown now", "result":"ok"}
         with patch('subprocess.Popen') as mocked_check_output:
             mocked_check_output.return_value.communicate.return_value = ["ok"]
             result = self.app.get('/api/v1.0/shutdown')
@@ -130,7 +130,7 @@ class UnitTestsServiceStatusApi(unittest.TestCase):
         """
         Test the API shutdown method
         """
-        standard_response = {"action":"Reboot", "command":"(/bin/sleep 5s; sudo /sbin/shutdown -r now) &", "result":"ok"}
+        standard_response = {"action":"Reboot", "command":"/bin/sleep 5s; sudo /sbin/shutdown -r now", "result":"ok"}
         with patch('subprocess.Popen') as mocked_check_output:
             mocked_check_output.return_value.communicate.return_value = ["ok"]
             result = self.app.get('/api/v1.0/shutdown/reboot')

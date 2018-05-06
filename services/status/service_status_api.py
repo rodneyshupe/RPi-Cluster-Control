@@ -23,15 +23,21 @@ def do_shutdown(do_reboot=False):
     """ This function handles the Shutdown method of the API """
 
     if do_reboot:
-        command = "(/bin/sleep 5s; sudo /sbin/shutdown -r now) &"
+        command = "/bin/sleep 5s; sudo /sbin/shutdown -r now"
         action = "Reboot"
     else:
-        command = "(/bin/sleep 5s; sudo /sbin/shutdown now) &"
+        command = "/bin/sleep 5s; sudo /sbin/shutdown now"
         action = "Shutdown"
     import subprocess
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    return {"action":action, "command":command, "result":output}
+    try:
+        subprocess.Popen(['/bin/bash', '-c', command], stdout=subprocess.PIPE, shell=True)
+        output = "ok"
+    except OSError as os_error:
+        output = "Failed  for " + os_error.strerror
+    except: # pylint: disable=bare-except
+        output = "Failed for unknown error"
+    response = {"action":action, "command":command, "result":output}
+    return response
 
 @app.route('/api/v1.0/status', methods=['GET'])
 def api_status():
